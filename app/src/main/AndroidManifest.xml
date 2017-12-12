@@ -16,7 +16,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".XmlActivity"></activity>
+        <activity android:name=".XmlActivity" />
+        <activity android:name=".PartesActivity"></activity>
     </application>
 
 </manifest>

@@ -21,15 +21,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //this.Eje1 = (Button) findViewById(R.id.Eje1);
+        this.Eje1 = (Button) findViewById(R.id.Eje1);
         /*this.Eje2 = (Button) findViewById(R.id.Eje2);
         this.Eje3 = (Button) findViewById(R.id.Eje3);
         this.Eje4 = (Button) findViewById(R.id.Eje4);
         this.Eje5 = (Button) findViewById(R.id.Eje5);
         this.Eje6 = (Button) findViewById(R.id.Eje6);
-
+*/
         this.Eje1.setOnClickListener(this);
-        this.Eje2.setOnClickListener(this);
+        /*this.Eje2.setOnClickListener(this);
         this.Eje3.setOnClickListener(this);
         this.Eje4.setOnClickListener(this);
         this.Eje5.setOnClickListener(this);
@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent Ejercicio;
 
         switch (view.getId()) {
-           /* case R.id.Eje1:
-                Ejercicio = new Intent(MainActivity.this, ConexionHTTP.class);
+           case R.id.Eje1:
+                Ejercicio = new Intent(MainActivity.this, PartesActivity.class);
                 startActivity(Ejercicio);
-                break;*/
+                break;
 
         }
     }
