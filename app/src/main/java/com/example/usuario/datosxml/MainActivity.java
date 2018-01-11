@@ -25,15 +25,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         this.Eje2 = (Button) findViewById(R.id.Eje2);
         this.Eje3 = (Button) findViewById(R.id.Eje3);
         this.Eje4 = (Button) findViewById(R.id.Eje4);
-        /*this.Eje5 = (Button) findViewById(R.id.Eje5);
-        this.Eje6 = (Button) findViewById(R.id.Eje6);
+        this.Eje5 = (Button) findViewById(R.id.Eje5);
+        /*this.Eje6 = (Button) findViewById(R.id.Eje6);
 */
         this.Eje1.setOnClickListener(this);
         this.Eje2.setOnClickListener(this);
         this.Eje3.setOnClickListener(this);
         this.Eje4.setOnClickListener(this);
-       /* this.Eje5.setOnClickListener(this);
-        this.Eje6.setOnClickListener(this);*/
+        this.Eje5.setOnClickListener(this);
+        /*this.Eje6.setOnClickListener(this);*/
 
 
     }
@@ -58,6 +58,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.Eje4:
                 Ejercicio = new Intent(MainActivity.this, NoticiaActivity.class);
+                startActivity(Ejercicio);
+                break;
+            case R.id.Eje5:
+                Ejercicio = new Intent(MainActivity.this, NewsActivity.class);
                 startActivity(Ejercicio);
                 break;
 

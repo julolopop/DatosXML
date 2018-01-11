@@ -22,7 +22,8 @@
         <activity android:name=".XmlActivity" />
         <activity android:name=".PartesActivity" />
         <activity android:name=".RSSActivity" />
-        <activity android:name=".NoticiaActivity"/>
+        <activity android:name=".NoticiaActivity" />
+        <activity android:name=".NewsActivity"></activity>
     </application>
 
 </manifest>

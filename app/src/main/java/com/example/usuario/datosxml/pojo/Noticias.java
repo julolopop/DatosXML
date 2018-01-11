@@ -22,10 +22,7 @@ public class Noticias implements Parcelable {
 
     @Override
     public String toString() {
-        return  "Title='" + title + '\'' +"\n\n\n"+
-                "Link='" + link + '\'' +"\n\n\n"+
-                "Description='" + description + '\'' +"\n\n\n"+
-                "PubDate='" + pubDate + '\'';
+        return  title;
     }
 
     public void setTitle(String title) {
