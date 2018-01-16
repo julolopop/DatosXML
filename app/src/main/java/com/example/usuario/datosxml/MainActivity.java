@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(Ejercicio);
                 break;
             case R.id.Eje5:
-                Ejercicio = new Intent(MainActivity.this, NewsActivity.class);
+                Ejercicio = new Intent(MainActivity.this, CreacionXMLActivity.class);
                 startActivity(Ejercicio);
                 break;
 

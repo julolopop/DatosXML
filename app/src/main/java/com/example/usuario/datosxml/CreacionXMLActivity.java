@@ -2,16 +2,13 @@ package com.example.usuario.datosxml;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.res.XmlResourceParser;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Xml;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.usuario.datosxml.pojo.Noticias;
@@ -20,39 +17,88 @@ import com.loopj.android.http.FileAsyncHttpResponseHandler;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import cz.msebera.android.httpclient.Header;
 
-public class NewsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
-
-
-    public static final String CANAL = "http://www.europapress.es/rss/rss.aspx?ch=279";
-    //public static final String CANAL = "http://192.168.1.200/feed/europapress.xml";
-    public static final String TEMPORAL = "europapress.xml";
+public class CreacionXMLActivity extends AppCompatActivity implements View.OnClickListener {
+    public static final String RSS = "http://www.europapress.es/rss/rss.aspx";
+    //public static final String RSS = "http://10.0.2.2/feed/alejandro.xml";
+    public static final String TEMPORAL = "alejandro.xml";
+    public static final String FICHERO_XML = "resultado.xml";
+    Button boton;
+    Button boton2;
     static ArrayList<Noticias> noticias;
-    ListView lista;
-    ArrayAdapter<Noticias> adapter;
-    FloatingActionButton fab;
-
-    @Override
-    public void onClick(View v) {
-        if (v == fab)
-            descarga(CANAL, TEMPORAL);
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news);
-        lista = (ListView) findViewById(android.R.id.list);
-        lista.setOnItemClickListener(this);
-        fab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(this);
+        setContentView(R.layout.activity_creacion_xml);
+        boton = (Button) findViewById(R.id.boton);
+        boton2 = (Button) findViewById(R.id.boton2);
+        boton.setOnClickListener(this);
+        boton2.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View v) {
+        if (v == boton)
+            descarga(RSS, TEMPORAL);
+        if (v == boton2)
+            AbrirExplorador();
+    }
+
+    private void AbrirExplorador() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+
+        if (intent.resolveActivity(getPackageManager()) != null)
+            startActivityForResult(intent, 1);
+    }
+
+
+    public void crearXML(ArrayList<Noticias> noticias, String fichero) throws IOException {
+        FileOutputStream fout;
+        fout = new FileOutputStream(new File(Environment.getExternalStorageDirectory().getAbsolutePath(), fichero));
+        Toast.makeText(CreacionXMLActivity.this,Environment.getExternalStorageDirectory().getAbsolutePath()+fichero,Toast.LENGTH_LONG);
+        XmlSerializer serializer = Xml.newSerializer();
+
+
+        serializer.setOutput(fout, "UTF-8");
+        serializer.startDocument(null, true);
+        serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true); //poner tabulación
+        serializer.startTag(null, "titulares");
+        for (int i = 0; i < noticias.size(); i++) {
+            serializer.startTag(null, "item");
+
+            serializer.startTag(null, "title");
+            serializer.text(noticias.get(i).getTitle());
+            serializer.endTag(null, "title");
+
+            serializer.startTag(null, "link");
+            serializer.text(noticias.get(i).getLink());
+            serializer.endTag(null, "link");
+
+            serializer.startTag(null, "description");
+            serializer.text(noticias.get(i).getDescription());
+            serializer.endTag(null, "description");
+
+            serializer.startTag(null, "pubDate");
+            serializer.text(noticias.get(i).getPubDate());
+            serializer.endTag(null, "pubDate");
+
+            serializer.endTag(null, "item");
+
+        }
+        serializer.endTag(null, "titulares");
+        serializer.endDocument();
+        serializer.flush();
+        fout.close();
     }
 
 
@@ -134,6 +180,7 @@ public class NewsActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, File file) {
                 progreso.dismiss();
+                Toast.makeText(CreacionXMLActivity.this, "Error: " + throwable.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -148,7 +195,13 @@ public class NewsActivity extends AppCompatActivity implements AdapterView.OnIte
                     e.printStackTrace();
                 }
 
-                mostrar();
+
+                try {
+                    crearXML(noticias,FICHERO_XML);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
 
             @Override
@@ -161,28 +214,4 @@ public class NewsActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
     }
-
-    private void mostrar() {
-        if (noticias != null) {
-            if (adapter == null) {
-                adapter = new ArrayAdapter<Noticias>(this, android.R.layout.simple_list_item_1, noticias);
-                lista.setAdapter(adapter);
-            } else {
-                adapter.clear();
-                adapter.addAll(noticias);
-            }
-        } else
-            Toast.makeText(getApplicationContext(), "Error al crear la lista", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Uri uri = Uri.parse((String) noticias.get(position).getLink());
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        if (intent.resolveActivity(getPackageManager()) != null)
-            startActivity(intent);
-        else
-            Toast.makeText(getApplicationContext(), "No hay un navegador", Toast.LENGTH_SHORT).show();
-    }
-
 }
